@@ -19,7 +19,8 @@ public class Main {
         log.fine(String.format("%s", inputList.toString()));
 
         Day13 day13instance = new Day13();
-        day13instance.run(inputList);
+//        day13instance.run(inputList);
+        day13instance.runTestCase();
     }
 
     private static void init() {
