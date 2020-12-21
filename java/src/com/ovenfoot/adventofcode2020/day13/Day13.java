@@ -28,11 +28,60 @@ public class Day13 {
         logger.info(String.format("Result is %d", result));
     }
 
+
     public void runTestCase() {
         List<String> testInput = Arrays.asList("939", "7,13,x,x,59,x,31,19");
-        runPartOne(testInput);
+//        runPartOne(testInput);
+
+        runPartTwo(testInput.get(1));
     }
 
+    public void runPartTwo(String rawOrderedBusIds) {
+        int count = 0;
+        List<String> orderedBusIds = Arrays.asList(rawOrderedBusIds.split(","));
+
+        List<BusIdOffsetPair> busIdOffsetPairs = new ArrayList<>();
+        for (String busId : orderedBusIds) {
+            if (!busId.equals("x")) {
+                Integer busIdInt = Integer.parseInt(busId);
+                BusIdOffsetPair busIdOffsetPair = new BusIdOffsetPair(busIdInt, count);
+                busIdOffsetPairs.add(busIdOffsetPair);
+            }
+            count++;
+        }
+
+        logger.fine(String.format("Parsed out %s",busIdOffsetPairs));
+
+        // Brute force. Take the largest number and check
+        // Find the largest number
+        BusIdOffsetPair largestBusIdOffsetPair = new BusIdOffsetPair(0, 0);
+        for (BusIdOffsetPair busIdOffsetPair : busIdOffsetPairs) {
+            if (busIdOffsetPair.busId > largestBusIdOffsetPair.busId) {
+                largestBusIdOffsetPair = busIdOffsetPair;
+            }
+        }
+
+        logger.fine(String.format("Largest bus id %s", largestBusIdOffsetPair));
+
+        boolean result = false;
+        long successfulTimestamp = 0;
+        for (long i = 1; !result; i++) {
+            successfulTimestamp = i * largestBusIdOffsetPair.busId - largestBusIdOffsetPair.offset;
+            if (testTimestamp(successfulTimestamp, busIdOffsetPairs)) {;
+                result = true;
+            }
+        }
+
+        logger.info(String.format("Found successful timestamp %d", successfulTimestamp));
+    }
+
+    public boolean testTimestamp(long timestamp, List<BusIdOffsetPair> busIdOffsetPairs) {
+        boolean result = true;
+        for (BusIdOffsetPair busIdOffsetPair : busIdOffsetPairs) {
+            result &= busIdOffsetPair.testValidTimestamp(timestamp);
+        }
+        return result;
+    }
     public BusIdTimeStampPair getNextBus(Integer currentTimestamp, Integer busId) {
         int leftover = currentTimestamp % busId;
         int nextTimestamp = currentTimestamp + (busId - leftover);
@@ -58,6 +107,24 @@ public class Day13 {
         public BusIdTimeStampPair(int busIdIn, int timestampIn) {
             busId = busIdIn;
             timestamp = timestampIn;
+        }
+    }
+
+    public class BusIdOffsetPair {
+        public long busId;
+        public long offset;
+
+        public BusIdOffsetPair(int busIdIn, int offsetIn) {
+            busId = busIdIn;
+            offset = offsetIn;
+        }
+
+        public boolean testValidTimestamp(long timestamp) {
+            return (timestamp + offset) % busId == 0;
+        }
+
+        public String toString() {
+            return String.format("{\"busId\": %d, \"offset\": %d}", busId, offset);
         }
     }
 }
