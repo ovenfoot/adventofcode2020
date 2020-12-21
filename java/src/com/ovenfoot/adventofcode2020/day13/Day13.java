@@ -14,6 +14,18 @@ public class Day13 {
         logger.info(String.format("Earliest timestamp is %d", startingTimestamp));
         List<Integer> busNumbers = getBusNumbersFromRaw(input.get(1));
         logger.info(String.format("Got bus numbers %s", busNumbers));
+
+        BusIdTimeStampPair nextBus = new BusIdTimeStampPair(Integer.MAX_VALUE, Integer.MAX_VALUE);
+        for (Integer busNumber : busNumbers) {
+            BusIdTimeStampPair nextBusForId = getNextBus(startingTimestamp, busNumber);
+            if (nextBusForId.timestamp < nextBus.timestamp) {
+                nextBus = nextBusForId;
+            }
+        }
+        logger.info(String.format("Next bus is bus %d arriving at %d", nextBus.busId, nextBus.timestamp));
+
+        Integer result = (nextBus.timestamp - startingTimestamp) * nextBus.busId;
+        logger.info(String.format("Result is %d", result));
     }
 
     public void runTestCase() {
@@ -21,6 +33,11 @@ public class Day13 {
         run(testInput);
     }
 
+    public BusIdTimeStampPair getNextBus(Integer currentTimestamp, Integer busId) {
+        int leftover = currentTimestamp % busId;
+        int nextTimestamp = currentTimestamp + (busId - leftover);
+        return new BusIdTimeStampPair(busId, nextTimestamp);
+    }
     public static List<Integer> getBusNumbersFromRaw(String rawBusNumbers) {
         List<String> rawSplit = Arrays.asList(rawBusNumbers.split(","));
         List<Integer> busList = new ArrayList<>();
@@ -32,5 +49,15 @@ public class Day13 {
         }
 
         return busList;
+    }
+
+    public class BusIdTimeStampPair {
+        public Integer busId;
+        public Integer timestamp;
+
+        public BusIdTimeStampPair(int busIdIn, int timestampIn) {
+            busId = busIdIn;
+            timestamp = timestampIn;
+        }
     }
 }
