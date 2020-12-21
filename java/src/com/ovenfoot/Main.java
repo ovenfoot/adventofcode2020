@@ -1,5 +1,7 @@
 package com.ovenfoot;
 
+import com.ovenfoot.adventofcode2020.day13.Day13;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.ArrayList;
@@ -9,21 +11,28 @@ import java.util.stream.Collectors;
 
 public class Main {
     private static Logger log = Logger.getLogger(Main.class.getName());
-
+    private static Level globalLogLevel = Level.FINEST;
     public static void main(String[] args) {
         init();
         String filename = args[0];
         List<String> inputList = convertInputFileToStringList(filename);
         log.fine(String.format("%s", inputList.toString()));
+
+        Day13 day13instance = new Day13();
+        day13instance.run(inputList);
     }
 
     private static void init() {
-        log.setLevel(Level.FINEST);
         ConsoleHandler handler = new ConsoleHandler();
         handler.setFormatter(new SimpleFormatter());
-        handler.setLevel(Level.FINEST);
         log.addHandler(handler);
         Logger.getAnonymousLogger().addHandler(handler);
+
+        Logger rootLogger = LogManager.getLogManager().getLogger("");
+        rootLogger.setLevel(globalLogLevel);
+        for (Handler h : rootLogger.getHandlers()) {
+            h.setLevel(globalLogLevel);
+        }
     }
 
     private static List<String> convertInputFileToStringList(String filePath) {
