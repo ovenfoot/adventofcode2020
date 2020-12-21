@@ -8,7 +8,7 @@ import java.util.logging.Logger;
 public class Day13 {
     Logger logger = Logger.getLogger(Day13.class.getName());
 
-    public void run(List<String> input) {
+    public void runPartOne(List<String> input) {
         logger.fine(String.format("running based on input %s", input));
         Integer startingTimestamp = Integer.parseInt(input.get(0));
         logger.info(String.format("Earliest timestamp is %d", startingTimestamp));
@@ -30,7 +30,7 @@ public class Day13 {
 
     public void runTestCase() {
         List<String> testInput = Arrays.asList("939", "7,13,x,x,59,x,31,19");
-        run(testInput);
+        runPartOne(testInput);
     }
 
     public BusIdTimeStampPair getNextBus(Integer currentTimestamp, Integer busId) {
