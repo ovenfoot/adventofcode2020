@@ -3,13 +3,11 @@ import argparse
 
 def main():
 	parser = argparse.ArgumentParser()
-	parser.add_argument("input-filename")
+	parser.add_argument("input_filename")
 
 	args = parser.parse_args()
 
 	print(args.input_filename)
-	print("i am doing things right now")
 
-if __name__ == "main":
-	print("sup")
+if __name__ == "__main__":
 	main()
