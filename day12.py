@@ -189,22 +189,26 @@ def main():
 
 	logging.info("Examining file {0}".format(args.input_filename))
 
-	# moves = parse_all_moves_from_file(args.input_filename)
+	moves = parse_all_moves_from_file(args.input_filename)
 	
 	# Part 1
 	# final_pos = simulate_move_sequence_part1(INITIAL_POSITION_AND_BEARING, moves)
 
 	# Part 2
-	move1 = parse_single_move("F10")
-	move2 = parse_single_move("N3")
-	move3 = parse_single_move("F7")
-	move4 = parse_single_move("R90")
-	move5 = parse_single_move("F11")
+	
+	# Test moves
+	# move1 = parse_single_move("F10")
+	# move2 = parse_single_move("N3")
+	# move3 = parse_single_move("F7")
+	# move4 = parse_single_move("R90")
+	# move5 = parse_single_move("F11")
+	# simulate_move_sequence_part2(INITIAL_PART_2_POSITION_INFO, [move1, move2, move3, move4, move5])
 
-	simulate_move_sequence_part2(INITIAL_PART_2_POSITION_INFO, [move1, move2, move3, move4, move5])
-	# manhattan_dist = calculate_manhattan_distnace(final_pos)
+	final_position_info = simulate_move_sequence_part2(INITIAL_PART_2_POSITION_INFO, moves)
+	final_pos = final_position_info["ferry"]
+	manhattan_dist = calculate_manhattan_distnace(final_pos)
 
-	# logging.info("Final pos is {0}. Manhattan distance is {1}".format(final_pos, manhattan_dist))
+	logging.info("Final pos is {0}. Manhattan distance is {1}".format(final_pos, manhattan_dist))
 
 if __name__ == "__main__":
 	main()
