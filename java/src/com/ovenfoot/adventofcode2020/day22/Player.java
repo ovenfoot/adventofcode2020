@@ -6,12 +6,16 @@ import java.util.List;
 
 public class Player {
     public List<Integer> deck;
+    public String id;
 
-    public Player() {
-        deck = new ArrayList<>();
+    public Player(String id) {
+        this.deck = new ArrayList<>();
+        this.id = id;
     }
-    public Player(List<Integer> deck) {
+
+    private Player(String id, List<Integer> deck) {
         this.deck = deck;
+        this.id = id;
     }
 
     public Integer drawTopCard() {
@@ -35,6 +39,10 @@ public class Player {
         return deck.toString();
     }
 
+    public Integer getDeckSize() {
+        return deck.size();
+    }
+
     public Integer calculateScore() {
         Collections.reverse(deck);
         Integer score = 0;
@@ -44,5 +52,25 @@ public class Player {
             multiplier++;
         }
         return score;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public List<Integer> getDeck() {
+        return deck;
+    }
+
+    public Player copy() {
+        List<Integer> newDeck = new ArrayList<>();
+        for (Integer card : this.getDeck()) {
+            // Dirty deserialisation hack
+            Integer newCard = Integer.parseInt(card.toString());
+            newDeck.add(newCard);
+        }
+        String newId = this.getId();
+
+        return new Player(newId, newDeck);
     }
 }
