@@ -73,4 +73,20 @@ public class Player {
 
         return new Player(newId, newDeck);
     }
+
+    public boolean hasTheSameDeck(Player other) {
+        if (other.getDeckSize() != this.getDeckSize()) {
+            return false;
+        }
+
+        for (int i = 0; i < this.getDeckSize(); i++) {
+            if (this.getDeck().get(i) != other.getDeck().get(i)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+
 }

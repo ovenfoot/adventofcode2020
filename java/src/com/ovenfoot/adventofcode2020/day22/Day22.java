@@ -1,11 +1,13 @@
 package com.ovenfoot.adventofcode2020.day22;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
 public class Day22 {
     private Player playerOne = new Player("1");
     private Player playerTwo = new Player("2");
+    private List<State> previousStates = new ArrayList<>();
     private static Logger logger = Logger.getLogger(Day22.class.getName());
     private Integer partTwoGameNumber = 0;
 
@@ -50,6 +52,10 @@ public class Day22 {
         logger.info(String.format("=== Game %d ===", partTwoGameNumber));
         // TODO: Check for infini-looping winnning condition
         for (int roundNumber = 1; !playerOneIn.isEmpty() && !playerTwoIn.isEmpty(); roundNumber++) {
+            if (previousStateExisted(playerOneIn, playerTwoIn)) {
+                logger.info("Infinite loop detected, player one wins");
+                return playerOneIn;
+            }
             logger.info(String.format("-- Round %d (Game %d)--", roundNumber, partTwoGameNumber));
             Player roundWinner = playPartTwoRound(playerOneIn, playerTwoIn);
             logger.info(String.format("Player %s win rounds %d of game %d",
@@ -63,6 +69,7 @@ public class Day22 {
     }
 
     public Player playPartTwoRound(Player playerOneIn, Player playerTwoIn) {
+        previousStates.add(new State(playerOneIn, playerTwoIn));
         logger.info(String.format("Player 1's deck: %s", playerOneIn));
         logger.info(String.format("Player 2's deck: %s", playerTwoIn));
 
@@ -125,5 +132,33 @@ public class Day22 {
         }
 
         logger.info(String.format("Initialised cards. {playerOne: %s, playerTwo: %s}", playerOne, playerTwo));
+    }
+
+    private boolean previousStateExisted(Player playerOneIn, Player playerTwoIn) {
+        for (State state : previousStates) {
+            if (state.isEqual(playerOneIn, playerTwoIn)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private class State {
+        Player playerOne;
+        Player playerTwo;
+
+        public State(Player playerOne, Player playerTwo) {
+            updateState(playerOne, playerTwo);
+        }
+
+        public void updateState(Player playerOne, Player playerTwo) {
+            this.playerOne = playerOne.copy();
+            this.playerTwo = playerTwo.copy();
+        }
+
+        public boolean isEqual(Player newPlayerOne, Player newPlayerTwo){
+            return newPlayerOne.hasTheSameDeck(playerOne) &&
+                    newPlayerTwo.hasTheSameDeck(playerTwo);
+        }
     }
 }
