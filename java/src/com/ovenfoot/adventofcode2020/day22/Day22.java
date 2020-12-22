@@ -12,14 +12,14 @@ public class Day22 {
         initialisePlayers(input);
         for (int roundNumber = 1; !playerOne.isEmpty() && !playerTwo.isEmpty(); roundNumber++) {
             logger.info(String.format("-- Round %d --", roundNumber));
-            playRound();
+            playPartOneRound();
         }
 
         Player winningPlayer = playerOne.isEmpty() ? playerTwo : playerOne;
         logger.info(String.format("Score is %d", winningPlayer.calculateScore()));
     }
 
-    public void playRound() {
+    public void playPartOneRound() {
         logger.info(String.format("Player 1's deck: %s", playerOne));
         logger.info(String.format("Player 2's deck: %s", playerTwo));
 
