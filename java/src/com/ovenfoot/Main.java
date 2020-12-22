@@ -6,6 +6,7 @@ import com.ovenfoot.adventofcode2020.day22.Day22;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.*;
 import java.util.stream.Collectors;
@@ -25,7 +26,7 @@ public class Main {
 ////        day13instance.runPartTwo(inputList.get(1));
 
         Day22 day22Instance = new Day22();
-        day22Instance.runPart1(inputList);
+        day22Instance.runPart2(inputList);
     }
 
     private static void init() {
@@ -38,6 +39,18 @@ public class Main {
         rootLogger.setLevel(globalLogLevel);
         for (Handler h : rootLogger.getHandlers()) {
             h.setLevel(globalLogLevel);
+            h.setFormatter(new SimpleFormatter() {
+                private static final String format = "[%1$tF %1$tT] [%2$-7s] %3$s %n";
+
+                @Override
+                public synchronized String format(LogRecord lr) {
+                    return String.format(format,
+                            new Date(lr.getMillis()),
+                            lr.getLevel().getLocalizedName(),
+                            lr.getMessage()
+                    );
+                }
+            });
         }
     }
 

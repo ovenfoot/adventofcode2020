@@ -20,6 +20,14 @@ public class Day22 {
         logger.info(String.format("Score is %d", winningPlayer.calculateScore()));
     }
 
+    public void runPart2(List<String> input) {
+        initialisePlayers(input);
+        playPartTwoGame(this.playerOne, this.playerTwo);
+        logger.info("== Post-game results ==");
+        logger.info(String.format("Player 1's deck: %s", playerOne));
+        logger.info(String.format("Player 2's deck: %s", playerTwo));
+    }
+
     public void playPartOneRound() {
         logger.info(String.format("Player 1's deck: %s", playerOne));
         logger.info(String.format("Player 2's deck: %s", playerTwo));
@@ -43,15 +51,18 @@ public class Day22 {
         // TODO: Check for infini-looping winnning condition
         for (int roundNumber = 1; !playerOneIn.isEmpty() && !playerTwoIn.isEmpty(); roundNumber++) {
             logger.info(String.format("-- Round %d (Game %d)--", roundNumber, partTwoGameNumber));
-            playPartTwoRound(playerOneIn, playerTwoIn);
+            Player roundWinner = playPartTwoRound(playerOneIn, playerTwoIn);
+            logger.info(String.format("Player %s win rounds %d of game %d",
+                    roundWinner.getId(), roundNumber, partTwoGameNumber));
         }
         Player winningPlayer = playerOneIn.isEmpty() ? playerTwoIn : playerOneIn;
         logger.info(String.format("The winner of game %d is player %s!", partTwoGameNumber, winningPlayer.getId()));
         partTwoGameNumber--;
+        logger.info(String.format("Anyway back to game %d", partTwoGameNumber));
         return winningPlayer;
     }
 
-    public void playPartTwoRound(Player playerOneIn, Player playerTwoIn) {
+    public Player playPartTwoRound(Player playerOneIn, Player playerTwoIn) {
         logger.info(String.format("Player 1's deck: %s", playerOneIn));
         logger.info(String.format("Player 2's deck: %s", playerTwoIn));
 
@@ -64,26 +75,26 @@ public class Day22 {
 
         } else {
             if (playerOneCard > playerTwoCard) {
-                logger.info("Player 1 wins the round!");
                 winner = playerOneIn;
             } else if (playerTwoCard > playerOneCard) {
-                logger.info("Player 2 wins the round!");
                 winner = playerTwoIn;
             }
         }
 
         if (winner.getId() == playerOneIn.getId()) {
             playerOneIn.addCards(playerOneCard, playerTwoCard);
+            winner = playerOneIn; // This is messy because of the deep copy implications
         } else if (winner.getId() == playerTwoIn.getId()) {
             playerTwoIn.addCards(playerTwoCard, playerOneCard);
+            winner = playerTwoIn; // This is messy beacuse of the deep copy implications
         }
-
+        return winner;
     }
 
     private boolean checkSubGameCondition(Player playerOne, Integer playerOneCard,
                                           Player playerTwo, Integer playerTwoCard) {
-        if (playerOne.getDeckSize() > playerOneCard &&
-                playerTwo.getDeckSize() > playerTwoCard) {
+        if (playerOne.getDeckSize() >= playerOneCard &&
+                playerTwo.getDeckSize() >= playerTwoCard) {
             return true;
         }
         return false;
