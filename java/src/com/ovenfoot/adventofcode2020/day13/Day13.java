@@ -33,7 +33,22 @@ public class Day13 {
         List<String> testInput = Arrays.asList("939", "7,13,x,x,59,x,31,19");
 //        runPartOne(testInput);
 
-        runPartTwo(testInput.get(1));
+        String testInputPartTwo = "17,13";
+        // 7n = 13m - 1
+        // 7 mod 13 = 6
+        // 7 x 1 = 13 - 6
+        // 7 x 2 = 13 x 2 - 12
+        // 7 x 3 = 13 x 2 - 5
+        // 7 x 4 = 13 x 3 - 11
+        // 7 x 5 = 13 x 3 - 4
+        // ..
+        // 7 x 11 = 13 x 6 - 1
+        // ..
+        //
+
+        // Results happen at ((a mod b) + (n * a)) * a - offset
+        // Test this hypothesis for
+        runPartTwo(testInputPartTwo);
     }
 
     public void runPartTwo(String rawOrderedBusIds) {
@@ -64,11 +79,14 @@ public class Day13 {
         logger.fine(String.format("Largest bus id %s", largestBusIdOffsetPair));
 
         boolean result = false;
+        int resultCount = 0;
         long successfulTimestamp = 0;
-        for (long i = 1; !result; i++) {
+        for (long i = 1; resultCount <= 2; i++) {
             successfulTimestamp = i * largestBusIdOffsetPair.busId - largestBusIdOffsetPair.offset;
             if (testTimestamp(successfulTimestamp, busIdOffsetPairs)) {;
-                result = true;
+                logger.fine(String.format("Found result %d at %d", successfulTimestamp, i));
+                resultCount++;
+
             }
         }
 

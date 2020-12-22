@@ -1,6 +1,7 @@
 package com.ovenfoot;
 
 import com.ovenfoot.adventofcode2020.day13.Day13;
+import com.ovenfoot.adventofcode2020.day22.Day22;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -18,10 +19,13 @@ public class Main {
         List<String> inputList = convertInputFileToStringList(filename);
         log.fine(String.format("%s", inputList.toString()));
 
-        Day13 day13instance = new Day13();
-//        day13instance.runPartOne(inputList);
-        day13instance.runTestCase();
+//        Day13 day13instance = new Day13();
+////        day13instance.runPartOne(inputList);
+//        day13instance.runTestCase();
+////        day13instance.runPartTwo(inputList.get(1));
 
+        Day22 day22Instance = new Day22();
+        day22Instance.runPart1(inputList);
     }
 
     private static void init() {
