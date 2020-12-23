@@ -1,13 +1,13 @@
 package com.ovenfoot.adventofcode2020.day22;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 
 public class Day22 {
     private Player playerOne = new Player("1");
     private Player playerTwo = new Player("2");
-    private List<State> previousStates = new ArrayList<>();
     private static Logger logger = Logger.getLogger(Day22.class.getName());
     private Integer partTwoGameNumber = 0;
 
@@ -24,7 +24,7 @@ public class Day22 {
 
     public void runPart2(List<String> input) {
         initialisePlayers(input);
-        Player winner = playPartTwoGame(this.playerOne, this.playerTwo);
+        Player winner = playPartTwoGame(this.playerOne, this.playerTwo, partTwoGameNumber);
         logger.info("== Post-game results ==");
         logger.info(String.format("Player 1's deck: %s", playerOne));
         logger.info(String.format("Player 2's deck: %s", playerTwo));
@@ -49,33 +49,29 @@ public class Day22 {
         }
     }
 
-    public Player playPartTwoGame(Player playerOneIn, Player playerTwoIn) {
-        partTwoGameNumber++;
-        if (previousStateExisted(playerOneIn, playerTwoIn)) {
-            logger.info("Infinite loop detected, player one wins");
-            return playerOneIn;
-        }
-        logger.info(String.format("=== Game %d ===", partTwoGameNumber));
+    public Player playPartTwoGame(Player playerOneIn, Player playerTwoIn, Integer previousPartTwoGameNumber) {
+        GameMemory gameMemory = new GameMemory();
+        Integer thisGameNumber = ++partTwoGameNumber;
+        logger.info(String.format("=== Game %d ===", thisGameNumber));
         // TODO: Check for infini-looping winnning condition
         for (int roundNumber = 1; !playerOneIn.isEmpty() && !playerTwoIn.isEmpty(); roundNumber++) {
-            if (previousStateExisted(playerOneIn, playerTwoIn)) {
+            if (gameMemory.stateExists(playerOneIn, playerTwoIn)) {
                 logger.info("Infinite loop detected, player one wins");
                 return playerOneIn;
             }
-            logger.info(String.format("-- Round %d (Game %d)--", roundNumber, partTwoGameNumber));
-            Player roundWinner = playPartTwoRound(playerOneIn, playerTwoIn);
+            gameMemory.addMemory(playerOneIn, playerTwoIn);
+            logger.info(String.format("-- Round %d (Game %d)--", roundNumber, thisGameNumber));
+            Player roundWinner = playPartTwoRound(playerOneIn, playerTwoIn, thisGameNumber);
             logger.info(String.format("Player %s win rounds %d of game %d",
-                    roundWinner.getId(), roundNumber, partTwoGameNumber));
+                    roundWinner.getId(), roundNumber, thisGameNumber));
         }
         Player winningPlayer = playerOneIn.isEmpty() ? playerTwoIn : playerOneIn;
-        logger.info(String.format("The winner of game %d is player %s!", partTwoGameNumber, winningPlayer.getId()));
-        partTwoGameNumber--;
-        logger.info(String.format("Anyway back to game %d", partTwoGameNumber));
+        logger.info(String.format("The winner of game %d is player %s!", thisGameNumber, winningPlayer.getId()));
+        logger.info(String.format("Anyway back to game %d", previousPartTwoGameNumber));
         return winningPlayer;
     }
 
-    public Player playPartTwoRound(Player playerOneIn, Player playerTwoIn) {
-        previousStates.add(new State(playerOneIn, playerTwoIn));
+    public Player playPartTwoRound(Player playerOneIn, Player playerTwoIn, Integer gameNumber) {
         logger.info(String.format("Player 1's deck: %s", playerOneIn));
         logger.info(String.format("Player 2's deck: %s", playerTwoIn));
 
@@ -84,7 +80,7 @@ public class Day22 {
         Player winner = null;
         logger.info(String.format("Player 1 plays %d, Player 2 plays %d", playerOneCard, playerTwoCard));
         if (checkSubGameCondition(playerOneIn, playerOneCard, playerTwoIn, playerTwoCard)) {
-            winner = playPartTwoGame(playerOneIn.copy(), playerTwoIn.copy());
+            winner = playPartTwoGame(playerOneIn.copy(), playerTwoIn.copy(), gameNumber);
 
         } else {
             if (playerOneCard > playerTwoCard) {
@@ -140,31 +136,23 @@ public class Day22 {
         logger.info(String.format("Initialised cards. {playerOne: %s, playerTwo: %s}", playerOne, playerTwo));
     }
 
-    private boolean previousStateExisted(Player playerOneIn, Player playerTwoIn) {
-        for (State state : previousStates) {
-            if (state.isEqual(playerOneIn, playerTwoIn)) {
-                return true;
-            }
-        }
-        return false;
-    }
+    private class GameMemory {
+        Set<String> previousStates;
 
-    private class State {
-        Player playerOne;
-        Player playerTwo;
-
-        public State(Player playerOne, Player playerTwo) {
-            updateState(playerOne, playerTwo);
+        public GameMemory() {
+            this.previousStates = new HashSet<>();
         }
 
-        public void updateState(Player playerOne, Player playerTwo) {
-            this.playerOne = playerOne.copy();
-            this.playerTwo = playerTwo.copy();
+        public void addMemory(Player playerOneIn, Player playerTwoIn) {
+            previousStates.add(getStringRepresentation(playerOneIn, playerTwoIn));
         }
 
-        public boolean isEqual(Player newPlayerOne, Player newPlayerTwo){
-            return newPlayerOne.hasTheSameDeck(playerOne) &&
-                    newPlayerTwo.hasTheSameDeck(playerTwo);
+        public boolean stateExists(Player playerOneIn, Player playerTwoIn){
+            return previousStates.contains(getStringRepresentation(playerOneIn, playerTwoIn));
+        }
+
+        private String getStringRepresentation(Player playerOne, Player playerTwo) {
+            return playerOne.toString() + playerTwo.toString();
         }
     }
 }
