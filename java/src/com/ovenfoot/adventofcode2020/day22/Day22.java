@@ -80,7 +80,7 @@ public class Day22 {
         Player winner = null;
         logger.info(String.format("Player 1 plays %d, Player 2 plays %d", playerOneCard, playerTwoCard));
         if (checkSubGameCondition(playerOneIn, playerOneCard, playerTwoIn, playerTwoCard)) {
-            winner = playPartTwoGame(playerOneIn.copy(), playerTwoIn.copy(), gameNumber);
+            winner = playPartTwoGame(playerOneIn.copy(playerOneCard), playerTwoIn.copy(playerTwoCard), gameNumber);
 
         } else {
             if (playerOneCard > playerTwoCard) {

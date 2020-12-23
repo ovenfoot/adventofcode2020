@@ -62,11 +62,11 @@ public class Player {
         return deck;
     }
 
-    public Player copy() {
+    public Player copy(Integer numCards) {
         List<Integer> newDeck = new ArrayList<>();
-        for (Integer card : this.getDeck()) {
+        for (int i = 0; i < numCards; i++) {
             // Dirty deserialisation hack
-            Integer newCard = Integer.parseInt(card.toString());
+            Integer newCard = Integer.parseInt(deck.get(i).toString());
             newDeck.add(newCard);
         }
         String newId = this.getId();
