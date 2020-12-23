@@ -51,6 +51,7 @@ public class Cup {
         }
 
         prevCup.clockWise = originalClockwise;
+        originalClockwise.counterClockwise = prevCup;
     }
 
     public Cup removeFromClockwise(int nthCup) {
@@ -90,6 +91,16 @@ public class Cup {
         currentCup.counterClockwise = prevCup;
 
         return returnCups;
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (other instanceof Cup) {
+            return ((Cup) other).value == this.value;
+        } else if (other instanceof Integer) {
+            return (int) other == this.value;
+        }
+        return false;
     }
 
     public String toString() {
