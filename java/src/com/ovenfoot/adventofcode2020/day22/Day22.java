@@ -55,12 +55,15 @@ public class Day22 {
         logger.info(String.format("=== Game %d ===", thisGameNumber));
         // TODO: Check for infini-looping winnning condition
         for (int roundNumber = 1; !playerOneIn.isEmpty() && !playerTwoIn.isEmpty(); roundNumber++) {
+            logger.info(String.format("-- Round %d (Game %d)--", roundNumber, thisGameNumber));
             if (gameMemory.stateExists(playerOneIn, playerTwoIn)) {
+                logger.info(String.format("Player 1's deck: %s", playerOneIn));
+                logger.info(String.format("Player 2's deck: %s", playerTwoIn));
                 logger.info("Infinite loop detected, player one wins");
                 return playerOneIn;
             }
             gameMemory.addMemory(playerOneIn, playerTwoIn);
-            logger.info(String.format("-- Round %d (Game %d)--", roundNumber, thisGameNumber));
+
             Player roundWinner = playPartTwoRound(playerOneIn, playerTwoIn, thisGameNumber);
             logger.info(String.format("Player %s win rounds %d of game %d",
                     roundWinner.getId(), roundNumber, thisGameNumber));
