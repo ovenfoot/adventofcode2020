@@ -1,6 +1,7 @@
 package com.ovenfoot;
 
 import com.ovenfoot.adventofcode2020.day13.Day13;
+import com.ovenfoot.adventofcode2020.day21.Day21;
 import com.ovenfoot.adventofcode2020.day22.Day22;
 import com.ovenfoot.adventofcode2020.day23.Day23;
 
@@ -14,7 +15,7 @@ import java.util.stream.Collectors;
 
 public class Main {
     private static Logger log = Logger.getLogger(Main.class.getName());
-    private static Level globalLogLevel = Level.FINEST;
+    private static Level globalLogLevel = Level.FINE;
     public static void main(String[] args) {
         init();
         String filename = args[0];
@@ -28,9 +29,11 @@ public class Main {
 //
 //        Day22 day22Instance = new Day22();
 //        day22Instance.runPart2(inputList);
-
-        Day23 day23 = new Day23();
-        day23.testPart2();
+//
+//        Day23 day23 = new Day23();
+//        day23.testPart2();
+        Day21 day21 = new Day21();
+        day21.runPart1(inputList);
     }
 
     private static void init() {
