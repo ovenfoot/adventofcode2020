@@ -24,10 +24,12 @@ public class Day22 {
 
     public void runPart2(List<String> input) {
         initialisePlayers(input);
-        playPartTwoGame(this.playerOne, this.playerTwo);
+        Player winner = playPartTwoGame(this.playerOne, this.playerTwo);
         logger.info("== Post-game results ==");
         logger.info(String.format("Player 1's deck: %s", playerOne));
         logger.info(String.format("Player 2's deck: %s", playerTwo));
+
+        logger.info(String.format("Winner: %s. Score %d", winner.getId(), winner.calculateScore()));
     }
 
     public void playPartOneRound() {
@@ -49,6 +51,10 @@ public class Day22 {
 
     public Player playPartTwoGame(Player playerOneIn, Player playerTwoIn) {
         partTwoGameNumber++;
+        if (previousStateExisted(playerOneIn, playerTwoIn)) {
+            logger.info("Infinite loop detected, player one wins");
+            return playerOneIn;
+        }
         logger.info(String.format("=== Game %d ===", partTwoGameNumber));
         // TODO: Check for infini-looping winnning condition
         for (int roundNumber = 1; !playerOneIn.isEmpty() && !playerTwoIn.isEmpty(); roundNumber++) {
