@@ -30,7 +30,7 @@ public class Main {
 //        day22Instance.runPart2(inputList);
 
         Day23 day23 = new Day23();
-        day23.testPart2();
+        day23.testPart1();
     }
 
     private static void init() {

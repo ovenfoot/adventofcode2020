@@ -1,26 +1,43 @@
 package com.ovenfoot.adventofcode2020.day23;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 import java.util.logging.Logger;
 
 public class Day23 {
     private static Logger logging = Logger.getLogger(Day23.class.getName());
+    private Map<Integer, Cup> allCupMap = new HashMap<>();
 
     public void runPart1(String input, Integer iterations) {
-        List<Integer> cups = getCupListFromInput(input);
-        Integer maxCupValue = cups.stream().mapToInt(v -> v).max().orElseThrow(NoSuchElementException::new);
-        Integer minCupValue = cups.stream().mapToInt(v -> v).min().orElseThrow(NoSuchElementException::new);
-        logging.info(String.format("Min cup %d, Max cup %d", minCupValue, maxCupValue));
+        Map<Integer, Cup> cupMap = createCupMapFromInput(input);
 
-        Integer nthCup = 0;
-        for (int i = 0; i < iterations; i++) {
-            logging.info(String.format("-- move %d --", i + 1));
-            nthCup = playOneMovePartOne(cups, nthCup, minCupValue, maxCupValue);
+//        List<Integer> cups = getCupListFromInput(input);
+//        Integer maxCupValue = cups.stream().mapToInt(v -> v).max().orElseThrow(NoSuchElementException::new);
+//        Integer minCupValue = cups.stream().mapToInt(v -> v).min().orElseThrow(NoSuchElementException::new);
+//        logging.info(String.format("Min cup %d, Max cup %d", minCupValue, maxCupValue));
+//
+//        Integer nthCup = 0;
+//        for (int i = 0; i < iterations; i++) {
+//            logging.info(String.format("-- move %d --", i + 1));
+//            nthCup = playOneMovePartOne(cups, nthCup, minCupValue, maxCupValue);
+//        }
+//        logging.info(String.format("Final: %s", cups));
+
+    }
+
+    public static String cupsInOrderToString(Cup firstCup) {
+        Set<Integer> visitedCups = new HashSet<>();
+        String returnString = "[";
+        for (Cup currentCup = firstCup; ; currentCup = currentCup.clockWise) {
+            if (visitedCups.contains(currentCup.getValue())) {
+                break;
+            }
+            returnString += currentCup.getValue().toString() + ", ";
+            visitedCups.add(currentCup.getValue());
         }
-        logging.info(String.format("Final: %s", cups));
-
+        // Remove last ", "
+        returnString = returnString.substring(0, returnString.length() - 2);
+        returnString += "]";
+        return returnString;
     }
 
     public void testPart1() {
@@ -46,11 +63,12 @@ public class Day23 {
     }
 
     public List<Integer> initPart2(String initialInput) {
-        List<Integer> cups = getCupListFromInput(initialInput);
-        for (int i = cups.size(); i <= 1000000; i++) {
-            cups.add(i);
-        }
-        return cups;
+//        List<Integer> cups = getCupListFromInput(initialInput);
+//        for (int i = cups.size(); i <= 1000000; i++) {
+//            cups.add(i);
+//        }
+//        return cups;
+        return null;
     }
 
     public Integer calculatePart2Score(List<Integer> cups) {
@@ -134,13 +152,31 @@ public class Day23 {
         return destinationCup;
     }
 
-    public static List<Integer> getCupListFromInput(String input) {
-        List<Integer> cupLabelsOut = new ArrayList<>();
+    public static Map<Integer, Cup> createCupMapFromInput(String input) {
+        Map<Integer, Cup> cupMapOut = new HashMap<>();
+        Cup currentCup = null;
+        Cup firstCup = null;
         for (int i = 0; i < input.length(); i++) {
             String character = Character.toString(input.charAt(i));
-            cupLabelsOut.add(Integer.parseInt(character));
+            Integer value = Integer.parseInt(character);
+            Cup newCup = new Cup(value);
+            if (currentCup != null) {
+                currentCup.clockWise = newCup;
+            }
+            newCup.counterClockwise = currentCup;
+            currentCup = newCup;
+            cupMapOut.put(value, newCup);
+            if (i == 0) {
+                // Save the first cup
+                firstCup = newCup;
+            }
         }
-        logging.info(String.format("From %s got %s", input, cupLabelsOut));
-        return cupLabelsOut;
+
+        // Finish the circle
+        currentCup.clockWise = firstCup;
+        firstCup.counterClockwise = currentCup;
+        logging.info(String.format("From %s got %s", input, cupMapOut));
+        logging.info(String.format("In order we got %s",cupsInOrderToString(firstCup)));
+        return cupMapOut;
     }
 }
