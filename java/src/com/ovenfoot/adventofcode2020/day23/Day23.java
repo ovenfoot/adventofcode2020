@@ -23,19 +23,21 @@ public class Day23 {
             }
             currentCup = playOneMovePartOne(cupMap, currentCup, minCupValue, maxCupValue);
         }
-        logging.info(String.format("Final: %s", cupsInOrderToString(firstCup)));
+        logging.info(String.format("Final: %s", cupsInOrderToString(cupMap.get(1))));
 
     }
 
     public static String cupsInOrderToString(Cup firstCup) {
         Set<Integer> visitedCups = new HashSet<>();
         String returnString = "[";
-        for (Cup currentCup = firstCup; ; currentCup = currentCup.clockWise) {
+        int i = 0;
+        for (Cup currentCup = firstCup; i < 25 ; currentCup = currentCup.clockWise) {
             if (visitedCups.contains(currentCup.getValue())) {
                 break;
             }
             returnString += currentCup.getValue().toString() + ", ";
             visitedCups.add(currentCup.getValue());
+            i++;
         }
         // Remove last ", "
         returnString = returnString.substring(0, returnString.length() - 2);
@@ -44,41 +46,60 @@ public class Day23 {
     }
 
     public void testPart1() {
-        runPart1("389125467", 20);
+        runPart1("853192647", 100);
     }
 
     public void testPart2() {
-        runPart2("389125467", 10000000);
+        runPart2("853192647", 10000000);
     }
 
     public void runPart2(String initialInput, Integer iterations) {
-//        List<Integer> cups = initPart2(initialInput);
-//        Integer maxCupValue = 1000000;
-//        Integer minCupValue = 1;
-//
-//        Integer nthCup = 0;
-//        for (int i = 0; i < iterations; i++) {
-//            logging.info(String.format("-- move %d --", i + 1));
-//            nthCup = playOneMovePartOne(cups, nthCup, minCupValue, maxCupValue);
-//        }
-//        logging.info(String.format("Final: %s", cups));
-//        calculatePart2Score(cups);
+        Map<Integer, Cup> cups = initPart2(initialInput);
+        logging.info(String.format("Initialised cups: %s", cupsInOrderToString(cups.get(999990))));
+        Integer maxCupValue = 1000000;
+        Integer minCupValue = 1;
+        Integer firstCupVal = getFirstCupValue(initialInput);
+        Cup currentCup = cups.get(firstCupVal);
+
+        for (int i = 0; i < iterations; i++) {
+            logging.info(String.format("-- move %d --", i + 1));
+            currentCup = playOneMovePartOne(cups, currentCup, minCupValue, maxCupValue);
+        }
+        logging.info(String.format("Final: %s", cupsInOrderToString(cups.get(1))));
+        calculatePart2Score(cups);
     }
 
-    public List<Integer> initPart2(String initialInput) {
-//        List<Integer> cups = getCupListFromInput(initialInput);
-//        for (int i = cups.size(); i <= 1000000; i++) {
-//            cups.add(i);
-//        }
-//        return cups;
-        return null;
+    public Map<Integer, Cup> initPart2(String initialInput) {
+        Map<Integer, Cup> cups = createCupMapFromInput(initialInput);
+        Integer firstCupValue = getFirstCupValue(initialInput);
+        Cup firstCup = cups.get(firstCupValue);
+        Cup lastCup = firstCup.counterClockwise;
+
+        Cup prevCup = lastCup;
+        for (int i = cups.size() + 1; i <= 1000000; i++) {
+            Cup currentCup = new Cup(i);
+            prevCup.clockWise = currentCup;
+            currentCup.counterClockwise = prevCup;
+            cups.put(i, currentCup);
+            prevCup = currentCup;
+        }
+
+        prevCup.clockWise = firstCup;
+        firstCup.counterClockwise = prevCup;
+        logging.fine(String.format("Finished adding 1 million. Last three cw %d %d %d",
+                lastCup.getValue(), lastCup.clockWise.getValue(), lastCup.clockWise.clockWise.getValue()));
+        logging.fine(String.format("Finished adding 1 million. First three ccw %d %d %d",
+                firstCup.getValue(), firstCup.counterClockwise.getValue(),
+                firstCup.counterClockwise.counterClockwise.getValue()));
+        return cups;
     }
 
-    public Integer calculatePart2Score(List<Integer> cups) {
-        Integer pos = findIndexOfCup(cups, 1);
-        Integer clockWiseOne = cups.get((pos + 1) % cups.size());
-        Integer clockWiseTwo = cups.get((pos + 2) % cups.size());
-        Integer result = clockWiseOne * clockWiseTwo;
+    public Long calculatePart2Score(Map<Integer, Cup> cups) {
+        Cup cupOne = cups.get(1);
+
+        Long clockWiseOne = new Long(cupOne.clockWise.getValue());
+        Long clockWiseTwo = new Long (cupOne.clockWise.clockWise.getValue());
+        Long result = clockWiseOne * clockWiseTwo;
         logging.info(String.format("The two cups clockwise of 1 are %d and %d, multiplying to give a result of %d",
                 clockWiseOne, clockWiseTwo, result));
         return result;
