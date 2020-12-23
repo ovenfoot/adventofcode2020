@@ -1,6 +1,7 @@
 package com.ovenfoot;
 
 import com.ovenfoot.adventofcode2020.day13.Day13;
+import com.ovenfoot.adventofcode2020.day20.Day20;
 import com.ovenfoot.adventofcode2020.day21.Day21;
 import com.ovenfoot.adventofcode2020.day22.Day22;
 import com.ovenfoot.adventofcode2020.day23.Day23;
@@ -32,8 +33,10 @@ public class Main {
 //
 //        Day23 day23 = new Day23();
 //        day23.testPart2();
-        Day21 day21 = new Day21();
-        day21.runPart1(inputList);
+//        Day21 day21 = new Day21();
+//        day21.runPart1(inputList);
+        Day20 day20 = new Day20();
+        day20.runPartOne(inputList);
     }
 
     private static void init() {
