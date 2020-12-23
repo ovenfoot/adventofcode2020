@@ -54,13 +54,7 @@ public class Day23 {
     }
 
     public Integer calculatePart2Score(List<Integer> cups) {
-        Integer pos = null;
-        for (int i = 0; pos == null; i++) {
-            if (cups.get(i) == 1) {
-                logging.info(String.format("Position of cup 1 is %d", i));
-                pos = i;
-            }
-        }
+        Integer pos = findIndexOfCup(cups, 1);
         Integer clockWiseOne = cups.get((pos + 1) % cups.size());
         Integer clockWiseTwo = cups.get((pos + 2) % cups.size());
         Integer result = clockWiseOne * clockWiseTwo;
@@ -71,7 +65,7 @@ public class Day23 {
 
     public Integer playOneMovePartOne(List<Integer> cups, Integer nthMove,
                                             Integer minCupValue, Integer maxCupValue) {
-        logging.info(String.format("cups: %s", cups));
+//        logging.info(String.format("cups: %s", cups));
         Integer currentCup = cups.get(nthMove);
         logging.info(String.format("current cup: %d", currentCup));
         List<Integer> cupsInHand = placeCupsInHand(cups, nthMove);
@@ -79,24 +73,23 @@ public class Day23 {
         Integer destinationCup = getDestinationCup(cups, cupsInHand, currentCup, maxCupValue, minCupValue);
         logging.info(String.format("destination: %d", destinationCup));
         cups = placeCupsFromHand(cups, cupsInHand, destinationCup);
-        logging.info(String.format("result: %s", cups));
+//        logging.info(String.format("result: %s", cups));
         return getIndexOfNextCup(cups, currentCup);
     }
 
     public Integer getIndexOfNextCup(List<Integer> cups, Integer currentCup) {
-        for (int i = 0; i < cups.size(); i++) {
-            if (cups.get(i) == currentCup) {
-                return (i+1) % cups.size();
-            }
-        }
-        return null;
+        return (findIndexOfCup(cups, currentCup) + 1) % cups.size();
     }
 
     public static int findIndexOfCup(List<Integer> cups, Integer cupToFind) {
         boolean found = false;
         int index = 0;
         for(int i = 0; !found; i++) {
-            if (cups.get(i) == cupToFind) {
+            if (i >= cups.size()) {
+                logging.info(String.format("Couldnt find %d. Previous was %d", cupToFind, cups.get(i)));
+                logging.info("we have a problem");
+            }
+            if (cups.get(i).equals(cupToFind)) {
                 found = true;
                 index = i;
             }
