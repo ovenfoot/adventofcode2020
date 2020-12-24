@@ -5,6 +5,7 @@ import com.ovenfoot.adventofcode2020.day20.Day20;
 import com.ovenfoot.adventofcode2020.day21.Day21;
 import com.ovenfoot.adventofcode2020.day22.Day22;
 import com.ovenfoot.adventofcode2020.day23.Day23;
+import com.ovenfoot.adventofcode2020.day24.Day24;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -35,8 +36,10 @@ public class Main {
 //        day23.testPart2();
 //        Day21 day21 = new Day21();
 //        day21.runPart1(inputList);
-        Day20 day20 = new Day20();
-        day20.runPartOne(inputList);
+//        Day20 day20 = new Day20();
+//        day20.runPartOne(inputList);
+        Day24 day24 = new Day24();
+        day24.testRunPart1();
     }
 
     private static void init() {

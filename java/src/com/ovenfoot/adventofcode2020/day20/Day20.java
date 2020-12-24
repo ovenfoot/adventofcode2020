@@ -8,6 +8,7 @@ public class Day20 {
 
     public void runPartOne(List<String> input) {
         List<SingleTile> tileList = SingleTile.parseTileList(input);
+        logger.info(String.format("Parsed out %d tiles", tileList.size()));
         Set<SingleTile> tileSet = new HashSet<>(tileList);
         Map<Edge, Set<SingleTile>> edgeCountsMap = new HashMap<>();
 
@@ -34,11 +35,24 @@ public class Day20 {
                 }
             }
             if (uniqueEdgeCount == 2) {
-                logger.fine(String.format("Tile %d is a corner piece with two unique edges", tile.getId()));
+                logger.info(String.format("Tile %d is a corner piece with two unique edges", tile.getId()));
                 cornerTiles.add(tile);
             }
         }
 
+        logger.info(String.format("Found %d corner tiles", cornerTiles.size()));
+        calculateResult(cornerTiles);
+    }
+
+    public void calculateResult(Set<SingleTile> cornerTiles) {
+        Long result = Long.valueOf(1);
+        String outputString = "";
+        for (SingleTile tile : cornerTiles) {
+            result *= Long.valueOf(tile.getId());
+            outputString += tile.getId().toString() + " * ";
+        }
+        outputString = outputString.substring(0, outputString.length()-3);
+        logger.info(String.format("Result is %d from %s", result, outputString));
     }
 
     public void runRandomTests() {

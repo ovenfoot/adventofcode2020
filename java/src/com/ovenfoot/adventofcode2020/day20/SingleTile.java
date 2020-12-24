@@ -28,7 +28,7 @@ public class SingleTile {
         return id.hashCode();
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
