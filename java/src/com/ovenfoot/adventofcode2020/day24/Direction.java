@@ -27,6 +27,24 @@ enum Direction {
         return INVALID;
     }
 
+    public Direction getReverseDirection() {
+        switch(this) {
+            case SOUTH_WEST:
+                return NORTH_EAST;
+            case WEST:
+                return EAST;
+            case NORTH_WEST:
+                return SOUTH_EAST;
+            case NORTH_EAST:
+                return SOUTH_WEST;
+            case EAST:
+                return WEST;
+            case SOUTH_EAST:
+                return NORTH_WEST;
+        }
+        return INVALID;
+    }
+
     @Override
     public String toString() {
         switch(this) {
